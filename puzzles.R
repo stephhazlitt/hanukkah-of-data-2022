@@ -64,3 +64,24 @@ orders_raw |>
   pull(phone)
 ## [1] "212-771-8924"
 
+## PUZZLE 3
+#Aries == March 21 – April 19
+#Year of the Dog ==  c(2018, 2006, 1994, 1982, 1970, 1958, 1946)
+#Neighbourhood == 134-10 Foch Blvd, South Ozone Park, NY 11420
+
+dog <- c(2006, 1994, 1982, 1970, 1958, 1946, 1934)
+
+customers_raw |>
+  mutate(year = year(birthdate),
+         month = month(birthdate),
+         day = day(birthdate),
+         monthday = format(birthdate, "%m-%d"),
+         dogyear = case_when(year %in% dog ~ TRUE,
+                             TRUE ~ FALSE)) |>
+  filter(dogyear == TRUE,
+         month %in% c(3,4),
+         monthday > "03-20",
+         monthday < "04-20") |>
+  filter(str_detect(citystatezip, "South Ozone Park")) |>
+  pull(phone)
+## [1] "516-636-7397"
