@@ -112,3 +112,24 @@ orders_raw |>
   pull(phone)
 ## [1] "315-492-7411"
 
+## PUZZLE 6
+orders_items_raw |>
+  left_join(products_raw, by = "sku") |>
+  mutate(cost_price = wholesale_cost * qty,
+         sell_price = unit_price * qty) |>
+  group_by(orderid) |>
+  summarise(total_cost = sum(cost_price),
+            total_sell = sum(sell_price)) |>
+  ungroup() |>
+  mutate(profit = total_sell - total_cost) |>
+  filter(profit < 0 ) |>
+  left_join(orders_raw, by = "orderid") |>
+  left_join(customers_raw, by = "customerid") |>
+  group_by(name, phone) |>
+  count() |>
+  ungroup() |>
+  filter(n == max(n)) |>
+  pull(phone)
+## [1] "914-868-0316"
+
+
