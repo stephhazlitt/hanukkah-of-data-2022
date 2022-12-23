@@ -101,7 +101,14 @@ orders_raw |>
 ## [1] "718-649-9036"
 
 ## PUZZLE 5
-
-
-
+orders_raw |>
+  left_join(orders_items_raw, by = "orderid") |>
+  left_join(products_raw, by = "sku") |>
+  left_join(customers_raw, by = "customerid") |>
+  filter(str_detect(desc, "Cat Food")) |>
+  filter(str_detect(citystatezip, "Queens Village")) |>
+  filter(name == "Anita Koch") |>
+  slice_head() |>
+  pull(phone)
+## [1] "315-492-7411"
 
