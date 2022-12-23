@@ -63,6 +63,7 @@ orders_raw |>
   filter(desc == "Coffee, Drip") |>
   pull(phone)
 ## [1] "212-771-8924"
+## Rug given to cleaner 2017-04-05 12:49:41
 
 ## PUZZLE 3
 #Aries == March 21 – April 19
@@ -85,3 +86,22 @@ customers_raw |>
   filter(str_detect(citystatezip, "South Ozone Park")) |>
   pull(phone)
 ## [1] "516-636-7397"
+
+## PUZZLE 4
+orders_raw |>
+  left_join(orders_items_raw, by = "orderid") |>
+  left_join(products_raw, by = "sku") |>
+  filter(ordered == shipped) |>
+  filter(str_detect(desc, "Puff")) |>
+  left_join(customers_raw, by = "customerid") |>
+  mutate(ordertime = hour(ordered),
+         year = year(ordered)) |>
+  filter(ordertime == 4) |>
+  pull(phone)
+## [1] "718-649-9036"
+
+## PUZZLE 5
+
+
+
+
