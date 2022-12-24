@@ -41,6 +41,7 @@ customers_raw |>
   pull(phone)
 ## [1] "488-836-2374"
 
+
 ## PUZZLE 2
 orders_raw |>
   left_join(customers_raw, by = "customerid") |>
@@ -65,6 +66,7 @@ orders_raw |>
 ## [1] "212-771-8924"
 ## Rug given to cleaner 2017-04-05 12:49:41
 
+
 ## PUZZLE 3
 #Aries == March 21 – April 19
 #Year of the Dog ==  c(2018, 2006, 1994, 1982, 1970, 1958, 1946)
@@ -87,6 +89,7 @@ customers_raw |>
   pull(phone)
 ## [1] "516-636-7397"
 
+
 ## PUZZLE 4
 orders_raw |>
   left_join(orders_items_raw, by = "orderid") |>
@@ -100,6 +103,7 @@ orders_raw |>
   pull(phone)
 ## [1] "718-649-9036"
 
+
 ## PUZZLE 5
 orders_raw |>
   left_join(orders_items_raw, by = "orderid") |>
@@ -111,6 +115,7 @@ orders_raw |>
   slice_head() |>
   pull(phone)
 ## [1] "315-492-7411"
+
 
 ## PUZZLE 6
 orders_items_raw |>
@@ -132,4 +137,35 @@ orders_items_raw |>
   pull(phone)
 ## [1] "914-868-0316"
 
+
+## PUZZLE 7
+emily <- orders_raw |>
+  left_join(orders_items_raw, by = "orderid") |>
+  left_join(products_raw, by = "sku") |>
+  left_join(customers_raw, by = "customerid") |>
+  filter(name == "Emily Randolph") |>
+  filter(str_detect(desc, ".\\)")) |>
+  mutate(date = as_date(shipped),
+         item = str_remove(desc, "\\(.*" ))
+
+emily_dates <- emily |> pull(date)
+emily_items <- emily |> pull(item)
+
+boyfriend <- orders_raw |>
+  left_join(orders_items_raw, by = "orderid") |>
+  left_join(products_raw, by = "sku") |>
+  left_join(customers_raw, by = "customerid") |>
+  mutate(date = as_date(shipped),
+         item = str_remove(desc, "\\(.*" )) |>
+  filter(date %in% emily_dates,
+         item %in% emily_items,
+         name != "Emily Randolph")
+
+emily |>
+  left_join(boyfriend, by = c("date", "item")) |>
+  select(date, item, desc.x, desc.y, birthdate.x, name.x, name.y, birthdate.y, phone.y) |>
+  mutate(age_diff_years = year(birthdate.x) - year(birthdate.y)) |>
+  filter(name.y == "Jonathan Adams") |> #date, item and age diff all reasonable
+  pull(phone.y)
+## [1] "315-618-5263"
 
