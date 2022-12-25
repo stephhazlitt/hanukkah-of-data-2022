@@ -169,3 +169,26 @@ emily |>
   pull(phone.y)
 ## [1] "315-618-5263"
 
+
+## PUZZLE 8
+collectables <- orders_raw |>
+  left_join(orders_items_raw, by = "orderid") |>
+  left_join(products_raw, by = "sku") |>
+  filter(str_detect(desc, "^Noah's")) |>
+  mutate(items = str_remove(desc, "\\(.*" )) |>
+  distinct(desc) |>
+  pull(desc)
+
+orders_raw |>
+  left_join(orders_items_raw, by = "orderid") |>
+  left_join(products_raw, by = "sku") |>
+  left_join(customers_raw, by = "customerid") |>
+  group_by(customerid, name, phone) |>
+  filter(desc %in% collectables) |>
+  count() |>
+  ungroup() |>
+  filter(n == max(n)) |>
+  pull(phone)
+## [1] "929-906-5980"
+
+
